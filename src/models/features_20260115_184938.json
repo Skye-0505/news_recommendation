@@ -1,0 +1,26 @@
+{
+  "feature_names": [
+    "hist_click_count",
+    "active_hour",
+    "is_weekend",
+    "hist_ctr",
+    "title_length",
+    "has_abstract",
+    "subcategory_encoded",
+    "category_encoded",
+    "impression_count",
+    "click_count",
+    "ctr",
+    "category_match",
+    "ctr_gap",
+    "ctr_gap_abs",
+    "click_popularity_interaction",
+    "news_publish_hour",
+    "hour_match",
+    "weekend_news_match",
+    "title_length_pref",
+    "ctr_ratio",
+    "quality_interaction"
+  ],
+  "feature_count": 21
+}
