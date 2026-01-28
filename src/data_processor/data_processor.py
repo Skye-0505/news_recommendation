@@ -225,27 +225,33 @@ def create_training_samples(behaviors_df, user_features_df, news_features_df):
     enriched_df = pd.merge(enriched_df, news_features_df, on='news_id', how='left')
     # 处理缺失值
     enriched_df = enriched_df.fillna(0)
+
+    deepfm_df = enriched_df.copy()
+
     # 4. 添加交叉特征（核心！）
     print("  添加交叉特征...")
     enriched_df = add_cross_features(enriched_df)
 
     
-    print(f"  最终数据集维度: {enriched_df.shape}")
-    return enriched_df
+    print(f"  最终lr数据集维度: {enriched_df.shape}")
+    print(f"  最终deepfm数据集维度: {deepfm_df.shape}")
+    return enriched_df, deepfm_df
 
 
-def save_features(user_features, news_features, samples, output_dir='../../data/processed'):
+def save_features(user_features, news_features, samples, deepfm_samples, output_dir='../../data/processed'):
     """保存特征到文件"""
     os.makedirs(output_dir, exist_ok=True)
     
     user_features.to_csv(f'{output_dir}/user_features.csv', index=False)
     news_features.to_csv(f'{output_dir}/news_features.csv', index=False)
     samples.to_csv(f'{output_dir}/train_samples.csv', index=False)
+    deepfm_samples.to_csv(f'{output_dir}/train_deepfm_samples.csv', index=False)
     
     print(f"特征已保存到 {output_dir} 目录")
     print(f"用户特征: {len(user_features)} 行")
     print(f"新闻特征: {len(news_features)} 行")
-    print(f"训练样本: {len(samples)} 行")
+    print(f"lr训练样本: {len(samples)} 行")
+    print(f"deepfm训练样本: {len(samples)} 行")
 
 # 测试
 processor = MINDDataProcessor('../../data/raw/MINDsmall_train')
@@ -257,9 +263,7 @@ print(f"提取了 {len(news_features)} 篇新闻的特征")
 print(user_features.head())
 print(news_features.head())
 
-samples = create_training_samples(behaviors, user_features, news_features)
-print(f"构造了 {len(samples)} 个训练样本")
-print(f"正样本比例: {samples['label'].mean():.2%}")
+samples, deepfm_samples = create_training_samples(behaviors, user_features, news_features)
 
 # 保存
-save_features(user_features, news_features, samples)
+save_features(user_features, news_features, samples, deepfm_samples)
